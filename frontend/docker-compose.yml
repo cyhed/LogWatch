@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  app:
+    image: ${DOCKER_REGISTRY-}app
+    build:
+      context: .
+      dockerfile: App/Dockerfile
+    ports:
+      - "15000:8080"
+      - "15001:8081"

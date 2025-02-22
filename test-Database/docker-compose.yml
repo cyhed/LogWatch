@@ -1,0 +1,20 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-CU16-ubuntu-22.04
+    container_name: test-mssql
+    hostname: test-mssql
+    restart: always
+    environment:
+      SA_PASSWORD: "root123!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+      MSSQL_MEMORY_LIMIT_MB: "1024"
+      TZ: "Europe/Minsk"
+    ports:
+      - 14330:1433
+    deploy:
+      resources:
+        limits:
+          memory: 1536M
+        reservations:
+          memory: 1024M
