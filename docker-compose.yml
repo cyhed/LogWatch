@@ -1,0 +1,20 @@
+version: '3.4'
+
+services:
+
+  webapi:
+    image: ${DOCKER_REGISTRY-}webapi
+    build:
+      context: ./backend
+      dockerfile: WebApi/Dockerfile
+    ports:
+      - "14000:8080"
+
+  front:
+    image: ${DOCKER_REGISTRY-}app
+    build:
+      context: ./frontend
+      dockerfile: App/Dockerfile
+    ports:
+      - "15000:8080"
+

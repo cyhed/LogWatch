@@ -42,19 +42,30 @@ namespace App.Pages
             string tableUrl = "/api/logs";
 
             //шоб на ssl не жаловался
-            var handler = new HttpClientHandler();
-            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-            handler.ServerCertificateCustomValidationCallback =
-                (httpRequestMessage, cert, cetChain, policyErrors) =>
-                {
-                    return true;
-                };
-            using (var httpClient = new HttpClient(handler))
+            
+            
+
+            try
             {
-                string json = await httpClient.GetStringAsync(baseAddress + tableUrl + "?sortOrder=" + sortOrder + "&skip=" + (PageIndex* PageSize) + "&take=" +  (PageSize +1));
-                List<LogRecord>? instance = JsonConvert.DeserializeObject<List<LogRecord>>(json);
-                if (instance != null)
-                    DisplayedLogRecord = DisplayedLogRecord.Concat(instance).ToList();
+                var handler = new HttpClientHandler();
+                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+                handler.ServerCertificateCustomValidationCallback =
+                    (httpRequestMessage, cert, cetChain, policyErrors) =>
+                    {
+                        return true;
+                    };
+                using (var httpClient = new HttpClient(handler))
+                {
+                    string json = await httpClient.GetStringAsync(baseAddress + tableUrl + "?sortOrder=" + sortOrder + "&skip=" + (PageIndex * PageSize) + "&take=" + (PageSize + 1));
+                    List<LogRecord>? instance = JsonConvert.DeserializeObject<List<LogRecord>>(json);
+                    if (instance != null)
+                        DisplayedLogRecord = DisplayedLogRecord.Concat(instance).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+
+               test =  ex.Message;
             }
 
         }
