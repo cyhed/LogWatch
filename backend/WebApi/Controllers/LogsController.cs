@@ -1,32 +1,44 @@
-﻿using Domain;
+﻿using Application.Interface;
+using Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using WebApi.Entity;
 
 
 namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Logs : ControllerBase
+    public class LogsController : ControllerBase
     {
+        const int DEFAULT_NUMBER_OF_RECORD_RETURN = 500;
+        const string DEFAULT_SORT_ORDER = "data";
+
         LogsDbContext db;
-        public Logs(LogsDbContext context)
+        IDbConnectionStorage _dbConnectionStorage;
+        IContextProvider<LogsDbContext> _contextProvider;
+        public LogsController(LogsContextProvider LogsContextProvider,IDbConnectionStorage dbConnectionStorage)
         {
-            db = context;
+            _dbConnectionStorage = dbConnectionStorage;
+            _contextProvider = LogsContextProvider;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Object>>> Get(string sortOrder = "", int skip = 0, int take = 500)
+        public async Task<ActionResult<IEnumerable<OutputRecord>>> Get(string dbConnentId,string sortOrder = DEFAULT_SORT_ORDER, int skip = 0, int take = DEFAULT_NUMBER_OF_RECORD_RETURN)
         {
+            DbConnection currentConnection = _dbConnectionStorage.Connections.First(p => p.Id.ToString().ToLower() == dbConnentId.ToLower());
+            if(currentConnection == null)
+                return BadRequest("Id not found");
+            db = _contextProvider.GetContext(currentConnection);
+
+
             IQueryable<LogRecord> logs = db.Logs.AsQueryable();
             IQueryable<OutputRecord> queryable = Join(logs, db.LogsStatusCodes, db.AreaNumbers);
             queryable = Sort(queryable, sortOrder);
             if (skip > 0)
                 queryable = queryable.Skip(skip);
             if (take > 0)
-                queryable = queryable.Take(take);
-
-            
+                queryable = queryable.Take(take);            
             
 
             if (queryable == null)
@@ -65,15 +77,7 @@ namespace WebApi.Controllers
 
             return queryable;          
         }
-        private class OutputRecord
-        {
-            public string Guid { get; set; }
-            public DateTime DateTime { get; set; }
-            public string AreaNumber { get; set; }  = string.Empty;
-            public string LineId { get; set; } = string.Empty;
-            public bool Importance { get; set; } 
-            public string Status { get; set; } = string.Empty; 
-        }
+        
 
         private IQueryable<OutputRecord> Sort(IQueryable<OutputRecord> logs, string sortOrder)
         {

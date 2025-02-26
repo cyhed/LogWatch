@@ -1,6 +1,8 @@
+using Application.Interface;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using System.Data;
 namespace WebApi
 {
     public class Program
@@ -10,10 +12,9 @@ namespace WebApi
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-
-            // добавляем контекст ApplicationContext в качестве сервиса в приложение
-            builder.Services.AddDbContext<LogsDbContext>(options => options.UseSqlServer(connection));
+            
+            builder.Services.AddSingleton<LogsContextProvider, LogsContextProvider>();
+            builder.Services.AddSingleton<IDbConnectionStorage, DbConnnectionStorage>();
 
             builder.Services.AddControllers();
 
