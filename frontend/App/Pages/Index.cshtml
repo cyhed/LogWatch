@@ -37,13 +37,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                <a asp-page="./Index" 
-                asp-route-sortOrder="@Model.GuidSort" 
-                asp-route-dBConnectionId="@Model.CurrentDbConnection">
-                    @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].Guid)
-                </a>
-            </th>
+            
             <th>
                 <a asp-page="./Index" 
                 asp-route-sortOrder="@Model.DateSort" 
@@ -85,7 +79,6 @@
     @foreach (LogRecord record in Model.DisplayedLogRecord.Take(Model.PageSize))
     {
         <tr>
-            <td>@record.Guid</td>
             <td>@record.DateTime</td>
             <td>@record.AreaNumber</td>
             <td>@record.LineId</td>

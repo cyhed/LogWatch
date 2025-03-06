@@ -61,10 +61,15 @@ namespace App.Pages
 
 
             LogRecordRepository logRecordRepository = new();
-            if (dBConnectionId != null) 
-            if(!(String.IsNullOrEmpty(dBConnectionId)&& dBConnectionId.Length== 36))
-            DisplayedLogRecord = await logRecordRepository.ListAllAsync(baseAddress, CurrentDbConnection, CurrentSort, skip: PageIndex * PageSize, take: PageSize+1);
-
+            if (dBConnectionId != null)
+                if (!(String.IsNullOrEmpty(dBConnectionId) && dBConnectionId.Length == 36))
+                    try
+                    {
+                        DisplayedLogRecord = await logRecordRepository.ListAllAsync(baseAddress, CurrentDbConnection, CurrentSort, skip: PageIndex * PageSize, take: PageSize + 1);
+                    }
+                    catch (Exception ex) 
+                    { 
+                    }
             
 
             test = DisplayConnections.Count().ToString();
