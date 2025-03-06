@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using App.Entity;
-using Microsoft.Extensions.Configuration;
+using Domain;
+
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Persistence;
+
 namespace App.Pages
 {
     public class IndexModel : PageModel
@@ -20,53 +23,52 @@ namespace App.Pages
         public string StatusSort { get; set; }
         public string ImportanceSort { get; set; }
         public string CurrentSort { get; set; }
+        public string CurrentDbConnection { get; set; }
 
         public int PageSize {get; set; }
         public int PageIndex { get; set; } = 0;
 
-    public List<LogRecord> DisplayedLogRecord { get; private set; } = new();
+        [BindProperty]
+        public DbConnection Connection { get; set; } = new();
+        public List<DbConnection> DisplayConnections { get; set; } 
+        
+
+        [BindProperty]
+        public List<LogRecord> DisplayedLogRecord { get; private set; } = new();
         public IndexModel(ILogger<IndexModel> logger, IConfiguration configuration)
         {
             Configuration = configuration;
             _logger = logger;
-            baseAddress = Configuration.GetValue("ServerIp", "https://localhost:14001");
+            baseAddress = Configuration.GetValue("ServerI", "http://localhost:14000");
             PageSize = Configuration.GetValue("DefaultPageSize", 40);
+
+            DbConnectionRepository dbConnectionRepository = new(new Uri(baseAddress));
+            DisplayConnections = dbConnectionRepository.ListAllAsync().Result;
+            Connection = DisplayConnections.FirstOrDefault();
         }
 
-        
-       
-        public async Task OnGetAsync(string sortOrder, int pageIndex = 0)
+
+
+        public async Task OnGetAsync(string dBConnectionId,string sortOrder, int pageIndex = 0)
         {
             ChooseSort(sortOrder);
+            ChooseDbConnection(dBConnectionId);
             PageIndex = pageIndex;
-            string tableUrl = "/api/logs";
+           
+            DbConnectionRepository dbConnectionRepository = new(new Uri(baseAddress));
+            DisplayConnections = await dbConnectionRepository.ListAllAsync();
 
-            //шоб на ssl не жаловался
+
+
+            LogRecordRepository logRecordRepository = new();
+            if (dBConnectionId != null) 
+            if(!(String.IsNullOrEmpty(dBConnectionId)&& dBConnectionId.Length== 36))
+            DisplayedLogRecord = await logRecordRepository.ListAllAsync(baseAddress, CurrentDbConnection, CurrentSort, skip: PageIndex * PageSize, take: PageSize+1);
+
             
-            
 
-            try
-            {
-                var handler = new HttpClientHandler();
-                handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-                handler.ServerCertificateCustomValidationCallback =
-                    (httpRequestMessage, cert, cetChain, policyErrors) =>
-                    {
-                        return true;
-                    };
-                using (var httpClient = new HttpClient(handler))
-                {
-                    string json = await httpClient.GetStringAsync(baseAddress + tableUrl + "?sortOrder=" + sortOrder + "&skip=" + (PageIndex * PageSize) + "&take=" + (PageSize + 1));
-                    List<LogRecord>? instance = JsonConvert.DeserializeObject<List<LogRecord>>(json);
-                    if (instance != null)
-                        DisplayedLogRecord = DisplayedLogRecord.Concat(instance).ToList();
-                }
-            }
-            catch (Exception ex)
-            {
+            test = DisplayConnections.Count().ToString();
 
-               test =  ex.Message;
-            }
 
         }
         private void ChooseSort(string sortOrder)
@@ -78,6 +80,10 @@ namespace App.Pages
             LineIdSort = sortOrder == "lineId" ? "lineId_desc" : "lineId";
             StatusSort = sortOrder == "status" ? "status_desc" : "status";
             ImportanceSort = sortOrder == "importance" ? "importance_desc" : "importance";
+        }
+        private void ChooseDbConnection(string dBConnectionId)
+        {
+            CurrentDbConnection = dBConnectionId;
         }
     }
 }

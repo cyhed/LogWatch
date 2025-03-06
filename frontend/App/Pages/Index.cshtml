@@ -1,6 +1,6 @@
 ﻿@page
 
-@using App.Entity;
+@using Domain;
 
 @model IndexModel
 @{
@@ -9,45 +9,80 @@
 
 <link rel="stylesheet" href="~/@(nameof(App)).styles.css" />
 <h3>сервер : @Model.baseAddress</h3>
+
+   
+  
+    <table>
+        <tbody>
+        @foreach (DbConnection record in Model.DisplayConnections)
+        {
+            var choosStr = "выберите";
+            if (Model.CurrentDbConnection?.ToLower() == record.Id.ToString().ToLower())
+            {
+                choosStr = "выбранно";
+            }
+            <tr>
+                <td>@record.Server</td>
+                <td>@record.Port</td>
+                <td>@record.Database</td>
+                <td><a asp-page="./Index" asp-route-dBConnectionId="@record.Id.ToString()">@choosStr</a></td>
+            </tr>
+            
+        }
+        </tbody>
+    </table>
+
 <h2>Логи</h2>
 <h2>макс записей на странице : @Model.PageSize</h2>
 <table class="table">
     <thead>
         <tr>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.GuidSort">
+                <a asp-page="./Index" 
+                asp-route-sortOrder="@Model.GuidSort" 
+                asp-route-dBConnectionId="@Model.CurrentDbConnection">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].Guid)
                 </a>
             </th>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.DateSort">
+                <a asp-page="./Index" 
+                asp-route-sortOrder="@Model.DateSort" 
+                asp-route-dBConnectionId="@Model.CurrentDbConnection">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].DateTime)
                 </a>
             </th>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.AreaNumberSort">
+                <a asp-page="./Index" 
+                asp-route-sortOrder="@Model.AreaNumberSort" 
+                asp-route-dBConnectionId="@Model.CurrentDbConnection">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].AreaNumber)
                 </a>
             </th>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.LineIdSort">
+                <a asp-page="./Index" 
+                asp-route-sortOrder="@Model.LineIdSort" 
+                asp-route-dBConnectionId="@Model.CurrentDbConnection">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].LineId)
                 </a>
             </th>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.StatusSort">
+                <a asp-page="./Index" 
+                asp-route-sortOrder="@Model.StatusSort" 
+                asp-route-dBConnectionId="@Model.CurrentDbConnection">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].Status)
                 </a>
             </th>
             <th>
-                <a asp-page="./Index" asp-route-sortOrder="@Model.ImportanceSort">
+                <a asp-page="./Index" 
+                asp-route-sortOrder="@Model.ImportanceSort"
+                asp-route-dBConnectionId="@Model.CurrentDbConnection">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].Importance)
                 </a>
             </th>
         </tr>
     </thead>
     <tbody>
-    @foreach (LogRecord record in Model.DisplayedLogRecord)
+    @foreach (LogRecord record in Model.DisplayedLogRecord.Take(Model.PageSize))
     {
         <tr>
             <td>@record.Guid</td>
@@ -62,16 +97,18 @@
 </table>
 @{
     var prevDisabled = Model.PageIndex == 0 ? "disabled" : "";
-    var nextDisabled = Model.DisplayedLogRecord.Count() != Model.PageSize+1 ? "disabled" : "";
+    var nextDisabled = Model.DisplayedLogRecord.Count() < Model.PageSize + 1 ? "disabled" : "";
 }
 
 <a asp-page="./Index"
+   asp-route-dBConnectionId="@Model.CurrentDbConnection"
    asp-route-sortOrder="@Model.CurrentSort"
    asp-route-pageIndex="@(Model.PageIndex - 1)"   
    class="btn btn-primary @prevDisabled">
     Previous
 </a>
 <a asp-page="./Index"
+   asp-route-dBConnectionId="@Model.CurrentDbConnection"
    asp-route-sortOrder="@Model.CurrentSort"
    asp-route-pageIndex="@(Model.PageIndex + 1)"   
    class="btn btn-primary @nextDisabled">

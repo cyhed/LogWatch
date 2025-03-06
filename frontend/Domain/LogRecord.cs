@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 
-namespace App.Entity
+
+namespace Domain
 {
     public class LogRecord
     {
