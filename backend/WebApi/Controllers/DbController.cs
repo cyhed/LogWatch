@@ -1,9 +1,7 @@
 ﻿using Application.Interface;
 using Domain;
-
 using Microsoft.AspNetCore.Mvc;
-using Persistence;
-using WebApi.Entity;
+
 
 namespace WebApi.Controllers
 {
@@ -27,19 +25,27 @@ namespace WebApi.Controllers
                 this._dbConnectionStorage.Connections.Add(connection);    
             else
             {
-                return BadRequest("a record with such ID exists");
+                return BadRequest($"a record with such ID exists :{connection.Id}");
             }
             return Ok(connection);
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DbConnection>>> Get()
-        {         
-            
+        {                     
             return  _dbConnectionStorage.Connections;
         }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<DbConnection>> Get(string id)
+        {
+            DbConnection record = _dbConnectionStorage.Connections.FirstOrDefault(x => x.Id.ToString().ToLower() == id.ToLower());
+            if (record == null)
+            {
+                return NotFound();
+            }          
+            return Ok(record);
+        }
 
-        
         [HttpDelete("{id}")]
         public async Task<ActionResult<DbConnection>> Delete(string id)
         {
@@ -48,9 +54,23 @@ namespace WebApi.Controllers
             {
                 return NotFound();
             }
-            _dbConnectionStorage.Connections.Remove(record);
+            if(_dbConnectionStorage.Connections.Remove(record))            
+                return Ok(record);
+            return BadRequest(record);
+        }
+        
+        [HttpPut("{id}")]
+        public async Task<ActionResult<DbConnection>> Put(string id,[FromBody] DbConnection connection)
+        {
+            int index = _dbConnectionStorage.Connections.FindIndex(p => p.Id.ToString().ToLower() == id.ToLower());
+            if (index == -1)
+            {
+                return BadRequest($"A record with this ID does not exist : {id}");
+            }
+            connection.Id = new Guid(id);
+            _dbConnectionStorage.Connections[index] = connection;               
             
-            return Ok(record);
+            return Ok(connection);
         }
     }
 }
