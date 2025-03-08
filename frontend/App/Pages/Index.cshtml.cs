@@ -30,8 +30,8 @@ namespace App.Pages
 
         [BindProperty]
         public DbConnection Connection { get; set; } = new();
-        public List<DbConnection> DisplayConnections { get; set; } 
-        
+        public List<DbConnection> DisplayConnections { get; set; } = new();
+
 
         [BindProperty]
         public List<LogRecord> DisplayedLogRecord { get; private set; } = new();
@@ -39,11 +39,15 @@ namespace App.Pages
         {
             Configuration = configuration;
             _logger = logger;
-            baseAddress = Configuration.GetValue("ServerI", "http://localhost:14000");
+            baseAddress = Configuration.GetValue("ServerIp", "http://localhost:14000");
             PageSize = Configuration.GetValue("DefaultPageSize", 40);
 
-            DbConnectionRepository dbConnectionRepository = new(new Uri(baseAddress));
-            DisplayConnections = dbConnectionRepository.ListAllAsync().Result;
+            DbConnectionRepository dbConnectionRepository = new();
+            try { DisplayConnections = dbConnectionRepository.ListAllAsync(baseAddress).Result; }
+            catch (Exception ex){
+                _logger.LogWarning(ex.Message);
+            }
+            
             Connection = DisplayConnections.FirstOrDefault();
         }
 
@@ -55,9 +59,12 @@ namespace App.Pages
             ChooseDbConnection(dBConnectionId);
             PageIndex = pageIndex;
            
-            DbConnectionRepository dbConnectionRepository = new(new Uri(baseAddress));
-            DisplayConnections = await dbConnectionRepository.ListAllAsync();
-
+            DbConnectionRepository dbConnectionRepository = new();
+            try { DisplayConnections = dbConnectionRepository.ListAllAsync(baseAddress).Result; }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex.Message);
+            }
 
 
             LogRecordRepository logRecordRepository = new();

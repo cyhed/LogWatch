@@ -25,7 +25,10 @@
                 <td>@record.Server</td>
                 <td>@record.Port</td>
                 <td>@record.Database</td>
-                <td><a asp-page="./Index" asp-route-dBConnectionId="@record.Id.ToString()">@choosStr</a></td>
+                <td>
+                    <a asp-page="/Index" asp-route-dBConnectionId="@record.Id.ToString()">@choosStr</a> |                    
+                    <a asp-page="./DbConnections/Del" asp-route-id="@record.Id">Удалить</a>
+                </td>
             </tr>
             
         }

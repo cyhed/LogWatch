@@ -1,16 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Domain;
-using App;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-namespace App.Pages
+namespace App.Pages.DbConnections
 {
-    public class DbConnectionModel : PageModel
+    public class AddModel : PageModel
     {
-        private readonly ILogger<DbConnectionModel> _logger;
+        private readonly ILogger<AddModel> _logger;
 
         public string apiAddress;
         private readonly IConfiguration Configuration;
@@ -19,9 +18,10 @@ namespace App.Pages
         [BindProperty]
         public string Message { get; set; }
 
-        public DbConnectionModel(ILogger<DbConnectionModel> logger, IConfiguration configuration) {
+        public AddModel(ILogger<AddModel> logger, IConfiguration configuration)
+        {
             Configuration = configuration;
-            apiAddress = Configuration.GetValue("ServerI", "http://localhost:14000");
+            apiAddress = Configuration.GetValue("ServerIp", "http://localhost:14000");
             _logger = logger;
         }
         public void OnGet()
@@ -40,22 +40,25 @@ namespace App.Pages
                 {
                     return true;
                 };
-            
+
             var httpClient = new HttpClient(handler);
-            HttpResponseMessage response = await Network.PostAsJson(apiAddress + "/api/db", Network.SerializeToJson(connection), httpClient);
-            string responseAsString = await response.Content.ReadAsStringAsync();
-            _logger.LogInformation(responseAsString);
-            try
-            {
+            string responseAsString = default;
+            try {
+                HttpResponseMessage response = await Network.PostAsJson(apiAddress + "/api/db", Network.SerializeToJson(connection), httpClient);
+                responseAsString = await response.Content.ReadAsStringAsync();
                 response.EnsureSuccessStatusCode();
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException ex)            {
+                
+                _logger.LogInformation(ex.Message);
+                            }
+            catch (Exception ex)
             {
-                var data = JObject.Parse(responseAsString)["errors"];
-                string errors = data.ToString();                
-                _logger.LogInformation(errors);                
-                Message = errors;
-            }
+                
+            }            
+            _logger.LogInformation(responseAsString);
+            
+            
         }
     }
 }
