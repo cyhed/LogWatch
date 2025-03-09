@@ -36,43 +36,64 @@
     </table>
 
 <h2>Логи</h2>
+
+<form method="get">
+    <input type="hidden" name="dBConnectionId" value="@Model.CurrentDbConnection" 
+    <input type="hidden" name="sortOrder" value="@Model.CurrentSort" />
+    <p>        
+        <label>Title: <input type="datetime-local" name="startTimeRange" asp-for="@Model.StartTimeRange" /></label>
+        <label>End Time: <input type="datetime-local" name="endTimeRange" asp-for="@Model.EndTimeRange" /></label>
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
 <h2>макс записей на странице : @Model.PageSize</h2>
 <table class="table">
     <thead>
         <tr>
             
             <th>
-                <a asp-page="./Index" 
-                asp-route-sortOrder="@Model.DateSort" 
-                asp-route-dBConnectionId="@Model.CurrentDbConnection">
+                <a asp-page="./Index"
+                    asp-route-dBConnectionId="@Model.CurrentDbConnection"
+                    asp-route-sortOrder="@Model.DateSort" 
+                    asp-route-startTimeRange="@Model.StartTimeRange"
+                    asp-route-endTimeRange="@Model.EndTimeRange">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].DateTime)
                 </a>
             </th>
             <th>
-                <a asp-page="./Index" 
-                asp-route-sortOrder="@Model.AreaNumberSort" 
-                asp-route-dBConnectionId="@Model.CurrentDbConnection">
+                <a asp-page="./Index"
+                   asp-route-dBConnectionId="@Model.CurrentDbConnection"
+                   asp-route-sortOrder="@Model.DateSort"
+                   asp-route-startTimeRange="@Model.StartTimeRange"
+                   asp-route-endTimeRange="@Model.EndTimeRange">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].AreaNumber)
                 </a>
             </th>
             <th>
-                <a asp-page="./Index" 
-                asp-route-sortOrder="@Model.LineIdSort" 
-                asp-route-dBConnectionId="@Model.CurrentDbConnection">
+                <a asp-page="./Index"
+                   asp-route-dBConnectionId="@Model.CurrentDbConnection"
+                   asp-route-sortOrder="@Model.DateSort"
+                   asp-route-startTimeRange="@Model.StartTimeRange"
+                   asp-route-endTimeRange="@Model.EndTimeRange">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].LineId)
                 </a>
             </th>
             <th>
-                <a asp-page="./Index" 
-                asp-route-sortOrder="@Model.StatusSort" 
-                asp-route-dBConnectionId="@Model.CurrentDbConnection">
+                <a asp-page="./Index"
+                   asp-route-dBConnectionId="@Model.CurrentDbConnection"
+                   asp-route-sortOrder="@Model.DateSort"
+                   asp-route-startTimeRange="@Model.StartTimeRange"
+                   asp-route-endTimeRange="@Model.EndTimeRange">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].Status)
                 </a>
             </th>
             <th>
-                <a asp-page="./Index" 
-                asp-route-sortOrder="@Model.ImportanceSort"
-                asp-route-dBConnectionId="@Model.CurrentDbConnection">
+                <a asp-page="./Index"
+                   asp-route-dBConnectionId="@Model.CurrentDbConnection"
+                   asp-route-sortOrder="@Model.DateSort"
+                   asp-route-startTimeRange="@Model.StartTimeRange"
+                   asp-route-endTimeRange="@Model.EndTimeRange">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].Importance)
                 </a>
             </th>
@@ -82,7 +103,7 @@
     @foreach (LogRecord record in Model.DisplayedLogRecord.Take(Model.PageSize))
     {
         <tr>
-            <td>@record.DateTime</td>
+            <td>@record.DateTime.ToString("u")</td>
             <td>@record.AreaNumber</td>
             <td>@record.LineId</td>
             <td>@record.Status</td>
@@ -99,6 +120,8 @@
 <a asp-page="./Index"
    asp-route-dBConnectionId="@Model.CurrentDbConnection"
    asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-startTimeRange="@Model.StartTimeRange"
+   asp-route-endTimeRange="@Model.EndTimeRange"
    asp-route-pageIndex="@(Model.PageIndex - 1)"   
    class="btn btn-primary @prevDisabled">
     Previous
@@ -106,6 +129,8 @@
 <a asp-page="./Index"
    asp-route-dBConnectionId="@Model.CurrentDbConnection"
    asp-route-sortOrder="@Model.CurrentSort"
+   asp-route-startTimeRange="@Model.StartTimeRange"
+   asp-route-endTimeRange="@Model.EndTimeRange"
    asp-route-pageIndex="@(Model.PageIndex + 1)"   
    class="btn btn-primary @nextDisabled">
     Next

@@ -5,6 +5,7 @@ using Domain;
 
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Persistence;
+using System;
 
 namespace App.Pages
 {
@@ -13,8 +14,6 @@ namespace App.Pages
         public string baseAddress;
         private readonly IConfiguration Configuration;       
         private readonly ILogger<IndexModel> _logger;
-
-        public string test;
 
         public string DateSort { get; set; }
         public string GuidSort { get; set; }
@@ -35,6 +34,13 @@ namespace App.Pages
 
         [BindProperty]
         public List<LogRecord> DisplayedLogRecord { get; private set; } = new();
+
+        [BindProperty]
+        public DateTime? StartTimeRange { get; set; }
+        [BindProperty]
+        public DateTime? EndTimeRange { get; set; }
+
+
         public IndexModel(ILogger<IndexModel> logger, IConfiguration configuration)
         {
             Configuration = configuration;
@@ -53,12 +59,13 @@ namespace App.Pages
 
 
 
-        public async Task OnGetAsync(string dBConnectionId,string sortOrder, int pageIndex = 0)
+        public async Task OnGetAsync(string dBConnectionId,string sortOrder, int pageIndex = 0, string startTimeRange = "", string endTimeRange = "")
         {
             ChooseSort(sortOrder);
             ChooseDbConnection(dBConnectionId);
+            ChooseTimeRange(startTimeRange, endTimeRange);
             PageIndex = pageIndex;
-           
+            
             DbConnectionRepository dbConnectionRepository = new();
             try { DisplayConnections = dbConnectionRepository.ListAllAsync(baseAddress).Result; }
             catch (Exception ex)
@@ -72,19 +79,21 @@ namespace App.Pages
                 if (!(String.IsNullOrEmpty(dBConnectionId) && dBConnectionId.Length == 36))
                     try
                     {
-                        DisplayedLogRecord = await logRecordRepository.ListAllAsync(baseAddress, CurrentDbConnection, CurrentSort, skip: PageIndex * PageSize, take: PageSize + 1);
+                        DisplayedLogRecord = await logRecordRepository.ListAllAsync(baseAddress, 
+                            CurrentDbConnection, 
+                            CurrentSort, 
+                            skip: PageIndex * PageSize,
+                            take: PageSize + 1,
+                            startTimeRange: StartTimeRange,
+                            endTimeRange: EndTimeRange);
                     }
                     catch (Exception ex) 
                     { 
-                    }
-            
-
-            test = DisplayConnections.Count().ToString();
-
-
+                    }            
         }
+
         private void ChooseSort(string sortOrder)
-        {
+        {            
             CurrentSort = sortOrder;
             GuidSort = sortOrder == "guid" ? "guid_desc" : "guid";
             DateSort = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
@@ -96,6 +105,21 @@ namespace App.Pages
         private void ChooseDbConnection(string dBConnectionId)
         {
             CurrentDbConnection = dBConnectionId;
+        }
+        private void ChooseTimeRange(string startTimeRange , string endTimeRange = null)
+        {
+            
+            StartTimeRange = null;
+            EndTimeRange = null;
+            DateTime tmp = new();
+            if (DateTime.TryParse(startTimeRange, out tmp))           
+                StartTimeRange = tmp;
+
+
+            if (DateTime.TryParse(endTimeRange, out tmp))
+                EndTimeRange = tmp;   
+            
+            
         }
     }
 }

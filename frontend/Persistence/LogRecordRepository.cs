@@ -29,7 +29,12 @@ namespace Persistence
             _httpClient.Dispose();
         }
 
-        public async Task<List<LogRecord>> ListAllAsync(string baseAddress,string dbConnectionId,string sortOrder, int skip, int take)
+        public async Task<List<LogRecord>> ListAllAsync(string baseAddress,
+            string dbConnectionId,
+            string sortOrder, 
+            int skip, int take, 
+            DateTime? startTimeRange = null, 
+            DateTime? endTimeRange = null )
         {
             string uri = baseAddress +_api
                 + "?"
@@ -39,9 +44,13 @@ namespace Persistence
                 + "&"
                 + $"skip={skip}"
                 + "&"
-                + $"take={take}";
-            
-                string response = await _httpClient.GetStringAsync(uri);
+                + $"take={take}"
+                + "&"
+                + $"startDateRange={(startTimeRange == null? "" : startTimeRange)}"
+                + "&"
+                + $"endDateRange={(endTimeRange == null ? "" : endTimeRange)}";
+
+            string response = await _httpClient.GetStringAsync(uri);
                 List<LogRecord>? instance = Network.DeserializeStringJson<List<LogRecord>>(response);
                 if (instance != null)
                     return instance;
