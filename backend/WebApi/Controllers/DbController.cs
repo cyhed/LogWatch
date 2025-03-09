@@ -67,7 +67,8 @@ namespace WebApi.Controllers
             {
                 return BadRequest($"A record with this ID does not exist : {id}");
             }
-            connection.Id = new Guid(id);
+            Guid.TryParse(id, out var newGuid);
+            connection.Id = newGuid;
             _dbConnectionStorage.Connections[index] = connection;               
             
             return Ok(connection);

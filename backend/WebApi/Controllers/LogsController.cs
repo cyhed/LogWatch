@@ -24,17 +24,30 @@ namespace WebApi.Controllers
             _contextProvider = LogsContextProvider;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OutputRecord>>> Get(string dbConnentId,string sortOrder = DEFAULT_SORT_ORDER, int skip = 0, int take = DEFAULT_NUMBER_OF_RECORD_RETURN)
+        public async Task<ActionResult<IEnumerable<OutputRecord>>> Get(string dbConnentId,
+            string sortOrder = DEFAULT_SORT_ORDER, 
+            int skip = 0, 
+            int take = DEFAULT_NUMBER_OF_RECORD_RETURN,
+            DateTime? startDateRange = null,
+            DateTime? endDateRange = null)
         {
             DbConnection currentConnection = _dbConnectionStorage.Connections.First(p => p.Id.ToString().ToLower() == dbConnentId.ToLower());
             if(currentConnection == null)
-                return BadRequest("Id not found");
+                return BadRequest("Connection Id not found");
             db = _contextProvider.GetContext(currentConnection);
 
 
             IQueryable<LogRecord> logs = db.Logs.AsQueryable();
             IQueryable<OutputRecord> queryable = Join(logs, db.LogsStatusCodes, db.AreaNumbers);
+
+
             queryable = Sort(queryable, sortOrder);
+
+            if(startDateRange is not null)
+                queryable = queryable.Where(p =>  startDateRange <= p.DateTime);
+            if (endDateRange is not null)
+                queryable = queryable.Where(p => p.DateTime <= endDateRange);
+
             if (skip > 0)
                 queryable = queryable.Skip(skip);
             if (take > 0)
