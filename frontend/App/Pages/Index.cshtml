@@ -64,7 +64,7 @@
             <th>
                 <a asp-page="./Index"
                    asp-route-dBConnectionId="@Model.CurrentDbConnection"
-                   asp-route-sortOrder="@Model.DateSort"
+                   asp-route-sortOrder="@Model.AreaNumberSort"
                    asp-route-startTimeRange="@Model.StartTimeRange"
                    asp-route-endTimeRange="@Model.EndTimeRange">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].AreaNumber)
@@ -73,7 +73,7 @@
             <th>
                 <a asp-page="./Index"
                    asp-route-dBConnectionId="@Model.CurrentDbConnection"
-                   asp-route-sortOrder="@Model.DateSort"
+                   asp-route-sortOrder="@Model.LineIdSort"
                    asp-route-startTimeRange="@Model.StartTimeRange"
                    asp-route-endTimeRange="@Model.EndTimeRange">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].LineId)
@@ -82,7 +82,7 @@
             <th>
                 <a asp-page="./Index"
                    asp-route-dBConnectionId="@Model.CurrentDbConnection"
-                   asp-route-sortOrder="@Model.DateSort"
+                   asp-route-sortOrder="@Model.StatusSort"
                    asp-route-startTimeRange="@Model.StartTimeRange"
                    asp-route-endTimeRange="@Model.EndTimeRange">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].Status)
@@ -91,7 +91,7 @@
             <th>
                 <a asp-page="./Index"
                    asp-route-dBConnectionId="@Model.CurrentDbConnection"
-                   asp-route-sortOrder="@Model.DateSort"
+                   asp-route-sortOrder="@Model.ImportanceSort"
                    asp-route-startTimeRange="@Model.StartTimeRange"
                    asp-route-endTimeRange="@Model.EndTimeRange">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].Importance)
