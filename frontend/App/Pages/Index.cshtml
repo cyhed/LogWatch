@@ -41,8 +41,9 @@
     <input type="hidden" name="dBConnectionId" value="@Model.CurrentDbConnection" 
     <input type="hidden" name="sortOrder" value="@Model.CurrentSort" />
     <p>        
-        <label>Title: <input type="datetime-local" name="startTimeRange" asp-for="@Model.StartTimeRange" /></label>
-        <label>End Time: <input type="datetime-local" name="endTimeRange" asp-for="@Model.EndTimeRange" /></label>
+        <label>Время с: <input type="datetime-local" name="startTimeRange" asp-for="@Model.StartTimeRange" /></label>
+        <label>По: <input type="datetime-local" name="endTimeRange" asp-for="@Model.EndTimeRange" /></label>
+        <label>Номер линии: <input type="number" min="0" name="lineIdFilter" asp-for="@Model.LineIdFilter" /></label>
         <input type="submit" value="Filter" />
     </p>
 </form>
@@ -57,7 +58,8 @@
                     asp-route-dBConnectionId="@Model.CurrentDbConnection"
                     asp-route-sortOrder="@Model.DateSort" 
                     asp-route-startTimeRange="@Model.StartTimeRange"
-                    asp-route-endTimeRange="@Model.EndTimeRange">
+                    asp-route-endTimeRange="@Model.EndTimeRange"
+                    asp-route-lineIdFilter="@Model.LineIdFilter">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].DateTime)
                 </a>
             </th>
@@ -66,7 +68,8 @@
                    asp-route-dBConnectionId="@Model.CurrentDbConnection"
                    asp-route-sortOrder="@Model.AreaNumberSort"
                    asp-route-startTimeRange="@Model.StartTimeRange"
-                   asp-route-endTimeRange="@Model.EndTimeRange">
+                   asp-route-endTimeRange="@Model.EndTimeRange"
+                   asp-route-lineIdFilter="@Model.LineIdFilter">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].AreaNumber)
                 </a>
             </th>
@@ -75,7 +78,8 @@
                    asp-route-dBConnectionId="@Model.CurrentDbConnection"
                    asp-route-sortOrder="@Model.LineIdSort"
                    asp-route-startTimeRange="@Model.StartTimeRange"
-                   asp-route-endTimeRange="@Model.EndTimeRange">
+                   asp-route-endTimeRange="@Model.EndTimeRange"
+                   asp-route-lineIdFilter="@Model.LineIdFilter">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].LineId)
                 </a>
             </th>
@@ -84,7 +88,8 @@
                    asp-route-dBConnectionId="@Model.CurrentDbConnection"
                    asp-route-sortOrder="@Model.StatusSort"
                    asp-route-startTimeRange="@Model.StartTimeRange"
-                   asp-route-endTimeRange="@Model.EndTimeRange">
+                   asp-route-endTimeRange="@Model.EndTimeRange"
+                   asp-route-lineIdFilter="@Model.LineIdFilter">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].Status)
                 </a>
             </th>
@@ -93,7 +98,8 @@
                    asp-route-dBConnectionId="@Model.CurrentDbConnection"
                    asp-route-sortOrder="@Model.ImportanceSort"
                    asp-route-startTimeRange="@Model.StartTimeRange"
-                   asp-route-endTimeRange="@Model.EndTimeRange">
+                   asp-route-endTimeRange="@Model.EndTimeRange"
+                   asp-route-lineIdFilter="@Model.LineIdFilter">
                     @Html.DisplayNameFor(model => model.DisplayedLogRecord[0].Importance)
                 </a>
             </th>
@@ -123,6 +129,7 @@
    asp-route-startTimeRange="@Model.StartTimeRange"
    asp-route-endTimeRange="@Model.EndTimeRange"
    asp-route-pageIndex="@(Model.PageIndex - 1)"   
+   asp-route-pageIndex="@(Model.PageIndex - 1)"
    class="btn btn-primary @prevDisabled">
     Previous
 </a>
@@ -131,7 +138,8 @@
    asp-route-sortOrder="@Model.CurrentSort"
    asp-route-startTimeRange="@Model.StartTimeRange"
    asp-route-endTimeRange="@Model.EndTimeRange"
-   asp-route-pageIndex="@(Model.PageIndex + 1)"   
+   asp-route-pageIndex="@(Model.PageIndex + 1)"
+   asp-route-lineIdFilter="@Model.LineIdFilter"
    class="btn btn-primary @nextDisabled">
     Next
 </a>

@@ -34,7 +34,8 @@ namespace Persistence
             string sortOrder, 
             int skip, int take, 
             DateTime? startTimeRange = null, 
-            DateTime? endTimeRange = null )
+            DateTime? endTimeRange = null ,
+            int? lineId = null)
         {
             string uri = baseAddress +_api
                 + "?"
@@ -48,7 +49,9 @@ namespace Persistence
                 + "&"
                 + $"startDateRange={(startTimeRange == null? "" : startTimeRange)}"
                 + "&"
-                + $"endDateRange={(endTimeRange == null ? "" : endTimeRange)}";
+                + $"endDateRange={(endTimeRange == null ? "" : endTimeRange)}"
+                + "&"
+                + $"lineId={(lineId == null ? "" : lineId)}";
 
             string response = await _httpClient.GetStringAsync(uri);
                 List<LogRecord>? instance = Network.DeserializeStringJson<List<LogRecord>>(response);

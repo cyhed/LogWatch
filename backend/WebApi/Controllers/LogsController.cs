@@ -29,7 +29,8 @@ namespace WebApi.Controllers
             int skip = 0, 
             int take = DEFAULT_NUMBER_OF_RECORD_RETURN,
             DateTime? startDateRange = null,
-            DateTime? endDateRange = null)
+            DateTime? endDateRange = null,
+            int? lineId = null)
         {
             DbConnection currentConnection = _dbConnectionStorage.Connections.First(p => p.Id.ToString().ToLower() == dbConnentId.ToLower());
             if(currentConnection == null)
@@ -48,11 +49,15 @@ namespace WebApi.Controllers
             if (endDateRange is not null)
                 queryable = queryable.Where(p => p.DateTime <= endDateRange);
 
+            if (lineId is not null && (lineId >= 0))
+                queryable = queryable.Where(p => p.LineId == lineId.ToString());
+
             if (skip > 0)
                 queryable = queryable.Skip(skip);
             if (take > 0)
                 queryable = queryable.Take(take);            
             
+
 
             if (queryable == null)
                 return NotFound();

@@ -39,6 +39,8 @@ namespace App.Pages
         public DateTime? StartTimeRange { get; set; }
         [BindProperty]
         public DateTime? EndTimeRange { get; set; }
+        [BindProperty]
+        public int? LineIdFilter { get; set; }
 
 
         public IndexModel(ILogger<IndexModel> logger, IConfiguration configuration)
@@ -59,11 +61,13 @@ namespace App.Pages
 
 
 
-        public async Task OnGetAsync(string dBConnectionId,string sortOrder, int pageIndex = 0, string startTimeRange = "", string endTimeRange = "")
+        public async Task OnGetAsync(string dBConnectionId,string sortOrder, int pageIndex = 0, string startTimeRange = "", string endTimeRange = "",int? lineIdFilter = null)
         {
             ChooseSort(sortOrder);
             ChooseDbConnection(dBConnectionId);
             ChooseTimeRange(startTimeRange, endTimeRange);
+            ChooseLine(lineIdFilter);
+
             PageIndex = pageIndex;
             
             DbConnectionRepository dbConnectionRepository = new();
@@ -85,7 +89,8 @@ namespace App.Pages
                             skip: PageIndex * PageSize,
                             take: PageSize + 1,
                             startTimeRange: StartTimeRange,
-                            endTimeRange: EndTimeRange);
+                            endTimeRange: EndTimeRange,
+                            lineId: LineIdFilter);
                     }
                     catch (Exception ex) 
                     { 
@@ -120,6 +125,12 @@ namespace App.Pages
                 EndTimeRange = tmp;   
             
             
+        }
+        private void ChooseLine(int? lineId)
+        {
+            if (lineId < 0)
+                lineId = null;
+            LineIdFilter = lineId;
         }
     }
 }
