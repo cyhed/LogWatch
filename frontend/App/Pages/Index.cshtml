@@ -8,10 +8,10 @@
 }
 
 <link rel="stylesheet" href="~/@(nameof(App)).styles.css" />
-<h3>сервер : @Model.baseAddress</h3>
+
 
    
-  
+<h4>Список подключений</h4>  
     <table>
         <tbody>
         @{
@@ -42,7 +42,7 @@
         </tbody>
     </table>
 
-<h2>Логи</h2>
+<h3>Записи</h3>
 
 <form method="get">
     <input type="hidden" name="dBConnectionId" value="@Model.CurrentDbConnection" 
@@ -55,7 +55,6 @@
     </p>
 </form>
 
-<h2>макс записей на странице : @Model.PageSize</h2>
 <table class="table">
     <thead>
         <tr>
@@ -135,10 +134,10 @@
    asp-route-sortOrder="@Model.CurrentSort"
    asp-route-startTimeRange="@Model.StartTimeRange"
    asp-route-endTimeRange="@Model.EndTimeRange"
-   asp-route-pageIndex="@(Model.PageIndex - 1)"   
    asp-route-pageIndex="@(Model.PageIndex - 1)"
+   asp-route-lineIdFilter="@Model.LineIdFilter"
    class="btn btn-primary @prevDisabled">
-    Previous
+    Предыдущая
 </a>
 <a asp-page="./Index"
    asp-route-dBConnectionId="@Model.CurrentDbConnection"
@@ -148,6 +147,6 @@
    asp-route-pageIndex="@(Model.PageIndex + 1)"
    asp-route-lineIdFilter="@Model.LineIdFilter"
    class="btn btn-primary @nextDisabled">
-    Next
+    Следующая
 </a>
 
