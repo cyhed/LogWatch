@@ -14,23 +14,30 @@
   
     <table>
         <tbody>
-        @foreach (DbConnection record in Model.DisplayConnections)
-        {
-            var choosStr = "выберите";
-            if (Model.CurrentDbConnection?.ToLower() == record.Id.ToString().ToLower())
+        @{
+            if (Model.DisplayConnections.Count == 0)
             {
-                choosStr = "выбранно";
+                <a  asp-area="" asp-page="/DbConnections/Add">Добавте подключение</a>
             }
-            <tr>
-                <td>@record.Server</td>
-                <td>@record.Port</td>
-                <td>@record.Database</td>
-                <td>
-                    <a asp-page="/Index" asp-route-dBConnectionId="@record.Id.ToString()">@choosStr</a> |                    
-                    <a asp-page="./DbConnections/Del" asp-route-id="@record.Id">Удалить</a>
-                </td>
-            </tr>
+            foreach (DbConnection record in Model.DisplayConnections)
+            {
+                var choosStr = "выберите";
+                if (Model.CurrentDbConnection?.ToLower() == record.Id.ToString().ToLower())
+                {
+                    choosStr = "выбранно";
+                }
+                <tr>
+                    <td>@record.Server</td>
+                    <td>@record.Port</td>
+                    <td>@record.Database</td>
+                    <td>
+                        <a asp-page="/Index" asp-route-dBConnectionId="@record.Id.ToString()">@choosStr</a> |
+                        <a asp-page="./DbConnections/Del" asp-route-id="@record.Id">Удалить</a>|
+                        <a asp-page="./DbConnections/Edit" asp-route-id="@record.Id">Изменить</a>
+                    </td>
+                </tr>
             
+            }
         }
         </tbody>
     </table>

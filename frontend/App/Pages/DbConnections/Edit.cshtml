@@ -1,0 +1,37 @@
+﻿@page
+@model App.Pages.DbConnections.EditModel
+@{
+}
+<form method="post">
+    
+    <p>
+        
+        <input type="hidden" minlength="1" required asp-for="Connection.Id" />
+    </p>
+    <p>
+        <label asp-for="Connection.Id">Id</label><br />
+        <label asp-for="@Model.Connection.Id">@Model.Connection.Id</label><br />
+    </p>
+    <p>
+        <label asp-for="Connection.Server">Server</label><br />
+        <input type="text" minlength="1" required asp-for="Connection.Server" />
+    </p>
+    <p>
+        <label asp-for="Connection.Port">Port</label><br />
+        <input type="number" min="0" max="65535" asp-for="Connection.Port" />
+    <p>
+        <label asp-for="Connection.Database">Database</label><br />
+        <input type="text" minlength="1" required asp-for="Connection.Database" />
+    </p>
+    </p>
+    <p>
+        <label asp-for="Connection.Username">Username</label><br />
+        <input type="text" minlength="1" required asp-for="Connection.Username" />
+    </p>
+    <p>
+        <label asp-for="Connection.Password">Password</label><br />
+        <input type="text" minlength="1" required asp-for="Connection.Password" />
+    </p>
+    <input type="submit" value="Отправить" />
+</form>
+
