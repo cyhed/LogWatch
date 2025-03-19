@@ -121,7 +121,7 @@
     @foreach (LogRecord record in Model.DisplayedLogRecord.Take(Model.PageSize))
     {
         <tr>
-            <td>@record.DateTime.ToString("u")</td>
+            <td>@record.DateTime.ToString("G")</td>
             <td>@record.AreaNumber</td>
             <td>@record.LineId</td>
             <td>@record.Status</td>
