@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Application.Interface;
 using Domain;
-
+using Microsoft.EntityFrameworkCore.Diagnostics;
 namespace Persistence
 {
     public class LogsContextProvider : IContextProvider<LogsDbContext>
@@ -10,8 +10,10 @@ namespace Persistence
         {
             string srtConnection = $"Server={connection.Server},{connection.Port};Database={connection.Database};Uid={connection.Username};Pwd={connection.Password}; TrustServerCertificate=True";
             var optionsBuilder = new DbContextOptionsBuilder<LogsDbContext>()
-                .UseSqlServer(srtConnection).Options;
-            return new LogsDbContext(optionsBuilder);
+                .UseSqlServer(srtConnection)
+                .LogTo(Console.WriteLine, new[] { RelationalEventId.CommandExecuted });
+            
+            return new LogsDbContext(optionsBuilder.Options);
         }
     }
 }
