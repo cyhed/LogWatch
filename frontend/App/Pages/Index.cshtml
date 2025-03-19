@@ -21,12 +21,10 @@
             }
             foreach (DbConnection record in Model.DisplayConnections)
             {
-                bool selectFlag = false;
-                var choosStr = "выберите";
+                bool selectFlag = false;               
                 if (Model.CurrentDbConnection?.ToLower() == record.Id.ToString().ToLower())
                 {
-                    selectFlag = true;
-                    choosStr = "выбранно";
+                    selectFlag = true;                    
                 }
                 <tr>
                     <td>

@@ -47,7 +47,7 @@ namespace Persistence
                 + "&"
                 + $"take={take}"
                 + "&"
-                + $"startDateRange={(startTimeRange == null? "" : startTimeRange)}"
+                + $"startDateRange={(startTimeRange == null ? "" : startTimeRange)}"
                 + "&"
                 + $"endDateRange={(endTimeRange == null ? "" : endTimeRange)}"
                 + "&"
