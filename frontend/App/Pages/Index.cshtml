@@ -10,10 +10,10 @@
 <link rel="stylesheet" href="~/@(nameof(App)).styles.css" />
 
 
-   
+
 <h4>Список подключений</h4>  
-    <table>
-        <tbody>
+<table>
+    <tbody>
         @{
             if (Model.DisplayConnections.Count == 0)
             {
@@ -21,17 +21,23 @@
             }
             foreach (DbConnection record in Model.DisplayConnections)
             {
+                bool selectFlag = false;
                 var choosStr = "выберите";
                 if (Model.CurrentDbConnection?.ToLower() == record.Id.ToString().ToLower())
                 {
+                    selectFlag = true;
                     choosStr = "выбранно";
                 }
                 <tr>
+                    <td>
+                        <a asp-page="/Index" asp-route-dBConnectionId="@record.Id.ToString()">
+                            <input class=" @(selectFlag ? "check-on" : "check-off")" type='button' name="redirect" />
+                        </a>
+                    </td>
                     <td>@record.Server</td>
                     <td>@record.Port</td>
                     <td>@record.Database</td>
-                    <td>
-                        <a asp-page="/Index" asp-route-dBConnectionId="@record.Id.ToString()">@choosStr</a> |
+                    <td>                        
                         <a asp-page="./DbConnections/Del" asp-route-id="@record.Id">Удалить</a>|
                         <a asp-page="./DbConnections/Edit" asp-route-id="@record.Id">Изменить</a>
                     </td>
@@ -51,7 +57,7 @@
         <label>Время с: <input type="datetime-local" name="startTimeRange" asp-for="@Model.StartTimeRange" /></label>
         <label>По: <input type="datetime-local" name="endTimeRange" asp-for="@Model.EndTimeRange" /></label>
         <label>Номер линии: <input type="number" min="0" name="lineIdFilter" asp-for="@Model.LineIdFilter" /></label>
-        <input type="submit" value="Filter" />
+        <input type="submit" value="Фильтр" />
     </p>
 </form>
 

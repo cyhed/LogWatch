@@ -54,3 +54,32 @@
         .table tbody tr:last-child td:last-child {
             border-radius: 0 0 20px 0;
         }
+
+.check-on {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    border: 3px solid #3e3e3e;
+    border-radius: 10px;
+    padding: 5px 5px;
+    background: #3e3e3e; /*или #fff*/
+    color: #3e3e3e;
+    text-transform: uppercase;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 5px;
+}
+.check-off {
+    width: 10px;
+    height: 10px;
+    display: inline-block;
+    border: 3px solid #3e3e3e;
+    border-radius: 20px;
+    padding: 5px 5px;
+    background: transparent; /*или #fff*/
+    color: #3e3e3e;
+    text-transform: uppercase;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 5px;
+}
